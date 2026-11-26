@@ -5,6 +5,7 @@ import { verify } from "jsonwebtoken"
 
 interface TokenPayload {
   sub: string
+  role: String
 }
 
 function ensureAuthenticated(
@@ -21,13 +22,14 @@ function ensureAuthenticated(
   const [, token] = authHeader.split(" ")
 
   try {
-    const { sub: user_id } = verify(
+    const { sub: user_id, role } = verify(
       token,
       authConfig.jwt.secret
     ) as TokenPayload
 
     request.user = {
       id: String(user_id),
+      role,
     }
 
     return next()

@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { AppError } from "@/utils/AppError"
 import { authConfig } from "@/configs/auth"
 import { sign } from "jsonwebtoken"
+import { resolve } from "path"
 
 class SessionsController {
   async create(request: Request, response: Response) {
@@ -11,6 +12,7 @@ class SessionsController {
       id: "1",
       username: "joao",
       password: "123456",
+      role: "costumer",
     }
 
     if (username !== fakeUser.username || password !== fakeUser.password) {
@@ -19,7 +21,7 @@ class SessionsController {
 
     const { secret, expiresIn } = authConfig.jwt
 
-    const token = sign({}, secret, {
+    const token = sign({ role: fakeUser.role }, secret, {
       expiresIn,
       subject: String(fakeUser.id),
     })
